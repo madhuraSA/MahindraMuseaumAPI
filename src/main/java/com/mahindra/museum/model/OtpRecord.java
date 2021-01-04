@@ -1,52 +1,58 @@
 package com.mahindra.museum.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import org.joda.time.DateTime;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 
-@Document
+@Entity
 public class OtpRecord {
 
-
-	
 	@Id
+	//@GeneratedValue(strategy=GenerationType.AUTO)
+	//private Integer id;
+	
 	private String userMobile;
 	
 	private String otp;
 	
-	@Indexed(name="otpGeneratedTimeIndex", expireAfterSeconds=900)
+//	@Indexed(name="otpGeneratedTimeIndex", expireAfterSeconds=900)
 	private DateTime otpGeneratedTime;
+
+//	public Integer getId() {
+//		return id;
+//	}
+//
+//	public void setId(Integer id) {
+//		this.id = id;
+//	}
 
 	public String getUserMobile() {
 		return userMobile;
 	}
 
-	public OtpRecord userMobile(String userMobile) {
+	public void setUserMobile(String userMobile) {
 		this.userMobile = userMobile;
-		return this;
 	}
 
 	public String getOtp() {
 		return otp;
 	}
 
-	public OtpRecord otp(String otp) {
+	public void setOtp(String otp) {
 		this.otp = otp;
-		return this;
 	}
 
 	public DateTime getOtpGeneratedTime() {
 		return otpGeneratedTime;
 	}
 
-	public OtpRecord otpGeneratedTime(DateTime otpGeneratedTime) {
+	public void setOtpGeneratedTime(DateTime otpGeneratedTime) {
 		this.otpGeneratedTime = otpGeneratedTime;
-		return this;
 	}
-	
-	
 
 
 }

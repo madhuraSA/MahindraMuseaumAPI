@@ -18,7 +18,6 @@ import com.mahindra.museum.model.ResponseModel;
 import com.mahindra.museum.model.UserInfo;
 import com.mahindra.museum.utility.Utility;
 
-
 @Service
 public class UserServiceImp implements UserService {
 
@@ -85,16 +84,16 @@ public class UserServiceImp implements UserService {
 	@Override
 	public ResponseEntity<ResponseModel> generateOTP(String phone) {
 		ResponseModel response = new ResponseModel();
+		UserInfo user = userInfoRepo.findByPhone(phone);
+		if (user != null) {
 
-		if (userInfoRepo.findByPhoneNum(phone) != null) {
-
-			// generate 4 digit random number;
+			// -- Generate 4 digit random number;
 			SecureRandom random = new SecureRandom();
 			String otp = String.format("%04d", random.nextInt(10000));
 
-			// DateTime otpGeneratedTime =Utility.getDateWithoutZone(new
-			// DateTime()).plusMinutes(330);
-			OtpRecord otpRecord = new OtpRecord().userMobile(phone).otp(otp).otpGeneratedTime(new DateTime());
+			OtpRecord otpRecord = new OtpRecord();
+			otpRecord.setUserMobile(phone);
+			otpRecord.setOtp(otp);
 
 			otpRecordRepository.save(otpRecord);
 			response.setResponseObject(otpRecord);
@@ -113,7 +112,7 @@ public class UserServiceImp implements UserService {
 		ResponseModel response = new ResponseModel();
 		// -- Check whether user exists with given mobile num
 
-		UserInfo user = userInfoRepo.findByPhoneNum(phone);
+		UserInfo user = userInfoRepo.findByPhone(phone);
 		if (user != null) {
 			OtpRecord otpRecord = otpRecordRepository.findByUserMobile(phone);
 			if (otpRecord != null) {
@@ -122,10 +121,10 @@ public class UserServiceImp implements UserService {
 					// otpService.clearOTP(userMobile);
 					otpRecordRepository.deleteById(phone);
 					DateTime loginTime = Utility.getDateWithoutZone(new DateTime()).plusMinutes(330);
-					user.setLoginTimeStamp(loginTime);
+			//		user.setLoginTimeStamp(loginTime);
 					// user.setLoginTimeStamp(Utility.getDateWithoutZone(new DateTime()));
-					user.setLogoutTimeStamp(null);
-					//-- Make user active once otp is successfully validated
+			//		user.setLogoutTimeStamp(null);
+					// -- Make user active once otp is successfully validated
 					user.setActive(Boolean.TRUE);
 					userInfoRepo.save(user);
 					response.setResponseDescription("Entered Otp is valid! Login Successful.");
@@ -134,8 +133,7 @@ public class UserServiceImp implements UserService {
 				}
 			}
 		}
-		
-		
+
 		response.setResponseCode(HttpStatus.FORBIDDEN.toString());
 		response.setResponseDescription("User not registered.");
 		return new ResponseEntity<ResponseModel>(response, HttpStatus.FORBIDDEN);

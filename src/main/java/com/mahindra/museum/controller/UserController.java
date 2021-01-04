@@ -26,7 +26,7 @@ public class UserController {
 	
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<ResponseModel> sampleResponse(@RequestHeader("Authorization") String authtoken) {
+	public ResponseEntity<ResponseModel> sampleResponse() {
 		return userServiceImp.getSampleResponse();
 	}
 	
